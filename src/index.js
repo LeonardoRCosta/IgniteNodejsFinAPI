@@ -51,6 +51,29 @@ app.post('/account', (req, res) => {
   return res.status(201).send();
 });
 
+app.put('/account', verifyIfAccountExists, (req, res) => {
+  const { name } = req.body;
+  const { customer } = req;
+
+  customer.name = name;
+
+  return res.status(201).send();
+});
+
+app.get('/account', verifyIfAccountExists, (req, res) => {
+  const { customer } = req;
+
+  return res.json(customer);
+});
+
+app.delete('/account', verifyIfAccountExists, (req, res) => {
+  const { customer } = req;
+
+  customers.splice(customer, 1);
+
+  return res.status(200).json(customers);
+});
+
 // middleware global
 // app.use(verifyIfAccountExists);
 
@@ -111,18 +134,12 @@ app.post('/withdraw', verifyIfAccountExists, (req, res) => {
   return res.status(201).send();
 });
 
-app.put('/account', verifyIfAccountExists, (req, res) => {
-  const { name } = req.body;
+app.get('/balance', verifyIfAccountExists, (req, res) => {
   const { customer } = req;
 
-  customer.name = name;
+  const balance = getBalance(customer.statement);
 
-  return res.status(201).send();
+  return res.json(balance);
 });
 
-app.get('/account', verifyIfAccountExists, (req, res) => {
-  const { customer } = req;
-
-  return res.json(customer);
-});
 app.listen(3333);
