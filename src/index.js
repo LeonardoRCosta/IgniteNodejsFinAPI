@@ -6,8 +6,6 @@ const app = express();
 
 app.use(express.json());
 
-app.listen(3333);
-
 const customers = [];
 
 app.post('/account', (req, res) => {
@@ -26,3 +24,19 @@ app.post('/account', (req, res) => {
 
   return res.status(201).send();
 });
+
+app.get('/statement', (req, res) => {
+  const { cpf } = req.headers;
+
+  const customer = customers.find((customers) => customers.cpf === cpf);
+
+  if (!customer)
+    return res.status(404).json({
+      error: 'Customer not found',
+      status: '404',
+    });
+
+  return res.json(customer.statement);
+});
+
+app.listen(3333);
